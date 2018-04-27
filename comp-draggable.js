@@ -1,3 +1,4 @@
+import EventUtil from 'util-events'
 cc.Class({
   name: 'Draggable',
   extends: cc.Component,
@@ -7,41 +8,41 @@ cc.Class({
   properties: {
     draggingZIndex: {
       default: 1000,
-      tooltip: '拖拽时节点的zIndex值'
+      tooltip: CC_EDITOR && '拖拽时节点的zIndex值'
     },
     draggingCursorStyle: {
       type: String,
       default: 'pointer',
-      tooltip: '拖拽时鼠标指针样式'
+      tooltip: CC_EDITOR && '拖拽时鼠标指针样式'
     },
     onDragStartEvent: {
       type: cc.Component.EventHandler,
       default: [],
-      tooltip: '拖拽开始事件'
+      tooltip: CC_EDITOR && '拖拽开始事件'
     },
     onDragCancelEvent: {
       type: cc.Component.EventHandler,
       default: [],
-      tooltip: '拖拽取消事件'
+      tooltip: CC_EDITOR && '拖拽取消事件'
     },
     passTestByDefault: {
       default: false,
-      tooltip: '默认test返回值'
+      tooltip: CC_EDITOR && '默认test返回值'
     },
     test: {
       type: cc.Component.EventHandler,
       default: null,
-      tooltip: 'test函数，详见wiki'
+      tooltip: CC_EDITOR && 'test函数，详见wiki'
     },
     testPassAudio: {
       url: cc.AudioClip,
       default: null,
-      tooltip: 'test通过播放的声音'
+      tooltip: CC_EDITOR && 'test通过播放的声音'
     },
     testFailedAudio: {
       url: cc.AudioClip,
       default: null,
-      tooltip: 'test未通过播放的声音'
+      tooltip: CC_EDITOR && 'test未通过播放的声音'
     }
   },
   onLoad () {
@@ -64,7 +65,7 @@ cc.Class({
 
     n.on(ET.TOUCH_START, e => {
       n.zIndex = this.draggingZIndex;
-      if (this.onDragStartEvent) cc.Component.EventHandler.emitEvents(this.onDragStartEvent);
+      EventUtil.emitEvents(this.onDragStartEvent);
     });
 
     n.on(ET.TOUCH_MOVE, e => {
@@ -76,10 +77,7 @@ cc.Class({
     n.on(ET.TOUCH_END, e => {
       var coord = this.passTestByDefault;
       if(this.test) {
-        const target = this.test.target;
-        const comp = target.getComponent(this.test.component);
-        const handler = comp[this.test.handler];
-        coord = handler.apply(comp, [e, this]);
+        coord = EventUtil.callHandler(this.test, [e, this]);
       }
       if (coord) {
         if (cc.js.isNumber(coord.x) && cc.js.isNumber(coord.y)) {
@@ -95,7 +93,7 @@ cc.Class({
     })
 
     n.on(ET.TOUCH_CANCEL, e => {
-      if (this.onDragStartEvent) cc.Component.EventHandler.emitEvents(this.onDragStartEvent);
+      EventUtil.emitEvents(this.onDragStartEvent);
       restore(e);
       e.stopPropagation();
     });
