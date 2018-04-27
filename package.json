@@ -2,12 +2,14 @@
   "name": "comp-draggable",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "ssh://git@code.vipkid.com.cn:3590/lingobus-fe/games/library/comp-draggable.git"
   },
   "author": "wangweihua@vipkid.com.cn",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "util-events": "git+ssh://git@code.vipkid.com.cn:3590/lingobus-fe/games/library/util-events.git"
+  }
 }
