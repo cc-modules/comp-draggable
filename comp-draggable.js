@@ -7,42 +7,33 @@ cc.Class({
   },
   properties: {
     draggingZIndex: {
-      default: 1000,
-      tooltip: CC_EDITOR && '拖拽时节点的zIndex值'
+      default: 1000
     },
     draggingCursorStyle: {
-      type: String,
-      default: 'pointer',
-      tooltip: CC_EDITOR && '拖拽时鼠标指针样式'
+      default: 'pointer'
     },
     onDragStartEvent: {
       type: cc.Component.EventHandler,
-      default: [],
-      tooltip: CC_EDITOR && '拖拽开始事件'
+      default: []
     },
     onDragCancelEvent: {
       type: cc.Component.EventHandler,
-      default: [],
-      tooltip: CC_EDITOR && '拖拽取消事件'
+      default: []
     },
     passTestByDefault: {
-      default: false,
-      tooltip: CC_EDITOR && '默认test返回值'
+      default: false
     },
     test: {
       type: cc.Component.EventHandler,
-      default: null,
-      tooltip: CC_EDITOR && 'test函数，详见wiki'
+      default: null
     },
     testPassAudio: {
       url: cc.AudioClip,
-      default: null,
-      tooltip: CC_EDITOR && 'test通过播放的声音'
+      default: null
     },
     testFailedAudio: {
       url: cc.AudioClip,
-      default: null,
-      tooltip: CC_EDITOR && 'test未通过播放的声音'
+      default: null
     }
   },
   onLoad () {
