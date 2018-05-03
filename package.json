@@ -9,7 +9,7 @@
   },
   "author": "wangweihua@vipkid.com.cn",
   "license": "ISC",
-  "dependencies": {
+  "$dependencies$": {
     "util-events": "git+ssh://git@code.vipkid.com.cn:3590/lingobus-fe/games/library/util-events.git"
   }
 }
