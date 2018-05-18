@@ -6,6 +6,7 @@ cc.Class({
     help: 'https://code.vipkid.com.cn/lingobus-fe/games/library/comp-draggable/wikis/home'
   },
   properties: {
+    tag: "",
     draggingZIndex: {
       default: 1000
     },
@@ -47,7 +48,7 @@ cc.Class({
       n.y = iy;
       n.zIndex = izIndex;
     };
-    
+
     // change cursor style on pc
     if (this.draggingCursorStyle) {
       n.on(ET.MOUSE_ENTER, e => canStyl.cursor = this.draggingCursorStyle);
