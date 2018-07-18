@@ -28,6 +28,10 @@ cc.Class({
       type: cc.Component.EventHandler,
       default: null
     },
+    onRestoreEvent: {
+      type: cc.Component.EventHandler,
+      default: null
+    },
     testPassAudio: {
       url: cc.AudioClip,
       default: null
@@ -42,11 +46,23 @@ cc.Class({
 
     // save initial node position for restore
     const ix = n.x, iy = n.y, izIndex = n.zIndex;
-
-    const restore = () => {
+    const doRestore = _ => {
       n.x = ix;
       n.y = iy;
       n.zIndex = izIndex;
+    }
+    const restore = () => {
+      var result = null;
+      if(this.onRestoreEvent) {
+        result = EventUtil.callHandler(this.onRestoreEvent, [this.node, this]);
+      }
+      if (!result) {
+        doRestore();
+      } else if (typeof result === 'function') {
+        result(doRestore, ix, iy, izIndex, this.node, this);
+      } else if (result.then) {
+        result.then(doRestore)
+      }
     };
 
     // change cursor style on pc
@@ -68,7 +84,7 @@ cc.Class({
 
     n.on(ET.TOUCH_END, e => {
       var coord = this.passTestByDefault;
-      if(this.test) {
+      if (this.test) {
         coord = EventUtil.callHandler(this.test, [e, this]);
       }
       if (coord) {
@@ -80,7 +96,8 @@ cc.Class({
         n.zIndex = izIndex;
       } else {
         if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
-        restore();
+        // here we schedule restore to make sure it will be called after Droppable's onDrop handler
+        this.scheduleOnce(restore);
       }
     })
 
