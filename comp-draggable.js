@@ -41,7 +41,7 @@ cc.Class({
       default: null
     }
   },
-  onLoad () {
+  start () {
     const n = this.node, canStyl = cc._canvas.style, ET = cc.Node.EventType;
 
     // save initial node position for restore
