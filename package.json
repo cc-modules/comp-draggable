@@ -5,11 +5,11 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "ssh://git@code.vipkid.com.cn:3590/lingobus-fe/games/library/comp-draggable.git"
+    "url": "ssh://git@code.vipkid.com.cn:3590/edu/cc-game/infra/comp-draggable.git"
   },
   "author": "wangweihua@vipkid.com.cn",
   "license": "ISC",
   "$dependencies$": {
-    "util-events": "git+ssh://git@code.vipkid.com.cn:3590/lingobus-fe/games/library/util-events.git"
+    "util-events": "git+ssh://git@code.vipkid.com.cn:3590/edu/cc-game/infra/util-events.git"
   }
 }
