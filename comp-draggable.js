@@ -41,15 +41,20 @@ cc.Class({
       default: null
     }
   },
+  onLoad () {
+    this._exit = true;
+    this._other = null;
+  },
   start () {
-    const n = this.node, canStyl = cc._canvas.style, ET = cc.Node.EventType;
+    const n = this.node, canStyl = (cc.game.canvas || cc._canvas).style, ET = cc.Node.EventType;
 
     // save initial node position for restore
-    const ix = n.x, iy = n.y, izIndex = n.zIndex;
+    const ix = n.x, iy = n.y, izIndex = n.zIndex, iparent = n.parent;
     const doRestore = _ => {
       n.x = ix;
       n.y = iy;
       n.zIndex = izIndex;
+      n.parent = iparent;
     }
     const restore = () => {
       var result = null;
@@ -83,29 +88,33 @@ cc.Class({
     });
 
     n.on(ET.TOUCH_END, e => {
-      var coord = this.passTestByDefault;
+      var props = this.passTestByDefault;
       if (this.test) {
-        coord = EventUtil.callHandler(this.test, [e, this]);
+        props = EventUtil.callHandler(this.test, [e, this.node, this._other]);
       }
-      if (coord) {
-        if (cc.js.isNumber(coord.x) && cc.js.isNumber(coord.y)) {
-          n.x = coord.x;
-          n.y = coord.y;
-        }
+      if (isPlainObject(props)) {
+        if (props) Object.assign(n, props);
         if (this.testPassAudio) cc.audioEngine.play(this.testPassAudio);
-        n.zIndex = izIndex;
       } else {
-        if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
         // here we schedule restore to make sure it will be called after Droppable's onDrop handler
-        this.scheduleOnce(restore);
+        if (props !== false) this.scheduleOnce(restore);
+        if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
       }
-    })
+    });
 
     n.on(ET.TOUCH_CANCEL, e => {
       EventUtil.emitEvents(this.onDragStartEvent);
       restore(e);
       e.stopPropagation();
     });
+  },
+  onCollisionEnter: function (other) {
+    this._other = other.node;
+    this._exit = false;
+  },
+  onCollisionExit: function () {
+    this._other = null;
+    this._exit = true;
   },
   _dispose (e) {
     e.targetOff(cc.Node.EventType.TOUCH_START);
@@ -114,3 +123,7 @@ cc.Class({
     e.targetOff(cc.Node.EventType.TOUCH_CANCEL);
   }
 });
+
+var isPlainObject = function (obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+};
