@@ -64,7 +64,7 @@ cc.Class({
       if (!result) {
         doRestore();
       } else if (typeof result === 'function') {
-        result(doRestore, ix, iy, izIndex, this.node, this);
+        result(doRestore, {x:ix, y:iy, zIndex:izIndex, node:this.node, component:this});
       } else if (result.then) {
         result.then(doRestore)
       }
