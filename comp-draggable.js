@@ -42,7 +42,6 @@ cc.Class({
     }
   },
   onLoad () {
-    this._exit = true;
     this._other = null;
   },
   start () {
@@ -56,10 +55,10 @@ cc.Class({
       n.zIndex = izIndex;
       n.parent = iparent;
     }
-    const restore = () => {
+    const restore = (e) => {
       var result = null;
       if(this.onRestoreEvent) {
-        result = EventUtil.callHandler(this.onRestoreEvent, [this.node, this]);
+        result = EventUtil.callHandler(this.onRestoreEvent, [this.node, this, e]);
       }
       if (!result) {
         doRestore();
@@ -97,7 +96,7 @@ cc.Class({
         if (this.testPassAudio) cc.audioEngine.play(this.testPassAudio);
       } else {
         // here we schedule restore to make sure it will be called after Droppable's onDrop handler
-        if (props !== false) this.scheduleOnce(restore);
+        if (props !== false) this.scheduleOnce(() => restore(e));
         if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
       }
     });
@@ -109,18 +108,12 @@ cc.Class({
     });
   },
   onCollisionEnter: function (other) {
-    this._other = other.node;
-    this._exit = false;
+    this._other = other;
   },
-  onCollisionExit: function () {
-    this._other = null;
-    this._exit = true;
-  },
-  _dispose (e) {
-    e.targetOff(cc.Node.EventType.TOUCH_START);
-    e.targetOff(cc.Node.EventType.TOUCH_MOVE);
-    e.targetOff(cc.Node.EventType.TOUCH_END);
-    e.targetOff(cc.Node.EventType.TOUCH_CANCEL);
+  onCollisionExit: function (other) {
+    if (this._other === other) {
+      this._other = null;
+    }
   }
 });
 
