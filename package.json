@@ -1,12 +1,7 @@
 {
   "name": "comp-draggable",
   "version": "1.0.1",
-  "description": "",
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@code.vipkid.com.cn:3590/edu/cc-game/infra/comp-draggable.git"
-  },
+  "description": "A Draggable component",
   "author": "wangweihua@vipkid.com.cn",
   "license": "ISC",
   "$dependencies$": {
