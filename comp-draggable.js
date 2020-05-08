@@ -2,9 +2,6 @@ import EventUtil from 'util-events'
 cc.Class({
   name: 'Draggable',
   extends: cc.Component,
-  editor: CC_EDITOR && {
-    help: 'https://code.vipkid.com.cn/lingobus-fe/games/library/comp-draggable/wikis/home'
-  },
   properties: {
     tag: "",
     draggingZIndex: {
@@ -70,7 +67,7 @@ cc.Class({
     };
 
     // change cursor style on pc
-    if (this.draggingCursorStyle) {
+    if (this.draggingCursorStyle && cc.sys.isBrowser) {
       n.on(ET.MOUSE_ENTER, e => canStyl.cursor = this.draggingCursorStyle);
       n.on(ET.MOUSE_LEAVE, e => canStyl.cursor = 'default');
     }
@@ -91,18 +88,30 @@ cc.Class({
       if (this.test) {
         props = EventUtil.callHandler(this.test, [e, this.node, this._other]);
       }
-      if (isPlainObject(props)) {
-        if (props) Object.assign(n, props);
-        if (this.testPassAudio) cc.audioEngine.play(this.testPassAudio);
+      if (props instanceof Promise) {
+        const promise = props;
+        promise.then(result => {
+          if (result === false) {
+            this.scheduleOnce(() => restore(e));
+            if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
+          } else {
+            if (this.testPassAudio) cc.audioEngine.play(this.testPassAudio);
+          }
+        });
       } else {
-        // here we schedule restore to make sure it will be called after Droppable's onDrop handler
-        if (props !== false) this.scheduleOnce(() => restore(e));
-        if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
+        if (isPlainObject(props)) {
+          if (props) Object.assign(n, props);
+          if (this.testPassAudio) cc.audioEngine.play(this.testPassAudio);
+        } else {
+          // here we schedule restore to make sure it will be called after Droppable's onDrop handler
+          if (props !== false) this.scheduleOnce(() => restore(e));
+          if (this.testFailedAudio) cc.audioEngine.play(this.testFailedAudio);
+        }
       }
     });
 
     n.on(ET.TOUCH_CANCEL, e => {
-      EventUtil.emitEvents(this.onDragStartEvent);
+      EventUtil.emitEvents(this.onDragCancelEvent);
       restore(e);
       e.stopPropagation();
     });
