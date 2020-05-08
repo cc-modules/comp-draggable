@@ -1,7 +1,5 @@
 {
   "name": "comp-draggable",
   "version": "1.0.2",
-  "description": "A Draggable component",
-  "author": "wangweihua@vipkid.com.cn",
-  "license": "ISC"
+  "description": "A Draggable component"
 }
